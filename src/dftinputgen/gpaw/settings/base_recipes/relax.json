@@ -1,0 +1,15 @@
+{
+    "kpts": {
+        "size": [4,4,1]
+    },
+    "xc": "BEEF-vdW",
+    "h": 0.16,
+    "occupations": {
+        "name": "fermi-dirac",
+        "width": 0.05
+    },
+    "poissonsolver": {
+        "dipolelayer": "xy"
+    },
+    "calculation": "relax"
+}

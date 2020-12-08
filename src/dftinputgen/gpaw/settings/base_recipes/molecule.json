@@ -1,0 +1,9 @@
+{
+    "xc": "BEEF-vdW",
+    "h": 0.16,
+    "occupations": {
+        "name": "fermi-dirac",
+        "width": 0.05
+    },
+    "calculation": "relax"
+}
