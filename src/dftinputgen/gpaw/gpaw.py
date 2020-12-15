@@ -6,7 +6,7 @@ import itertools
 from dftinputgen.data import STANDARD_ATOMIC_WEIGHTS
 from dftinputgen.utils import get_elem_symbol
 from dftinputgen.gpaw.settings import GPAW_TAGS
-from dftinputgen.gpaw.settings.calculation_presetss import GPAW_BASE_RECIPES
+from dftinputgen.gpaw.settings.calculation_presets import GPAW_BASE_RECIPES
 
 from dftinputgen.base import DftInputGenerator
 from dftinputgen.base import DftInputGeneratorError
