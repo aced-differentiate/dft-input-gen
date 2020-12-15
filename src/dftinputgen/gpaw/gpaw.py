@@ -3,13 +3,13 @@ import json
 import six
 import itertools
 
-from dftinpgen.data import STANDARD_ATOMIC_WEIGHTS
-from dftinpgen.utils import get_elem_symbol
-from dftinpgen.gpaw.settings import GPAW_TAGS
-from dftinpgen.gpaw.settings.base_recipes import GPAW_BASE_RECIPES
+from dftinputgen.data import STANDARD_ATOMIC_WEIGHTS
+from dftinputgen.utils import get_elem_symbol
+from dftinputgen.gpaw.settings import GPAW_TAGS
+from dftinputgen.gpaw.settings.calculation_presetss import GPAW_BASE_RECIPES
 
-from dftinpgen.base import DftInputGenerator
-from dftinpgen.base import DftInputGeneratorError
+from dftinputgen.base import DftInputGenerator
+from dftinputgen.base import DftInputGeneratorError
 
 class GPAWInputGeneratorError(DftInputGeneratorError):
     pass
@@ -17,14 +17,14 @@ class GPAWInputGeneratorError(DftInputGeneratorError):
 class GPAWInputGenerator(DftInputGenerator):
     """Base class to generate input python scripts for GPAW """
 
-    def __init__(self, crystal_structure=None, base_recipe=None,
+    def __init__(self, crystal_structure=None, calculation_presets=None,
                  custom_sett_file=None, custom_sett_dict=None,
                  write_location=None, overwrite_files=None, **kwargs):
         """
         """
         super(GPAWInputGenerator, self).__init__(
             crystal_structure=crystal_structure,
-            base_recipe=base_recipe,
+            calculation_presets=calculation_presets,
             custom_sett_file=custom_sett_file,
             custom_sett_dict=custom_sett_dict,
             write_location=write_location,
@@ -39,8 +39,8 @@ class GPAWInputGenerator(DftInputGenerator):
     @property
     def calculation_settings(self):
         calc_sett = {}
-        if self.base_recipe is not None:
-            calc_sett.update(GPAW_BASE_RECIPES[self.base_recipe])
+        if self.calculation_presets is not None:
+            calc_sett.update(GPAW_BASE_RECIPES[self.calculation_presets])
         if self.custom_sett_file is not None:
             with open(self.custom_sett_file, 'r') as fr:
                 calc_sett_update(json.load(fr))
@@ -50,8 +50,8 @@ class GPAWInputGenerator(DftInputGenerator):
 
 
     def _get_default_input_filename(self):
-        return '{}_in.py'.format(self.base_recipe) \
-            if self.base_recipe is not None else 'gpaw_in.py'
+        return '{}_in.py'.format(self.calculation_presets) \
+            if self.calculation_presets is not None else 'gpaw_in.py'
 
     @property
     def calc_obj_as_str(self):
