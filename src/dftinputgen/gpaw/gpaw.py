@@ -6,7 +6,7 @@ import itertools
 from dftinputgen.data import STANDARD_ATOMIC_WEIGHTS
 from dftinputgen.utils import get_elem_symbol
 from dftinputgen.gpaw.settings import GPAW_TAGS
-from dftinputgen.gpaw.settings.calculation_presets import GPAW_BASE_RECIPES
+from dftinputgen.gpaw.settings.calculation_presets import GPAW_PRESETS
 
 from dftinputgen.base import DftInputGenerator
 from dftinputgen.base import DftInputGeneratorError
@@ -31,6 +31,8 @@ class GPAWInputGenerator(DftInputGenerator):
             overwrite_files=overwrite_files,
             **kwargs)
 
+        self._calculation_settings = self._get_calculation_settings()
+
     @property
     def dft_package(self):
         return 'GPAW'
@@ -38,16 +40,19 @@ class GPAWInputGenerator(DftInputGenerator):
 
     @property
     def calculation_settings(self):
+        """Dictionary of all calculation settings to use as input for gpaw."""
+        return self._get_calculation_settings()
+
+    def _get_calculation_settings(self):
+        """Load all calculation settings: user-input and auto-determined."""
         calc_sett = {}
         if self.calculation_presets is not None:
-            calc_sett.update(GPAW_BASE_RECIPES[self.calculation_presets])
-        if self.custom_sett_file is not None:
-            with open(self.custom_sett_file, 'r') as fr:
-                calc_sett_update(json.load(fr))
+            calc_sett.update(GPAW_PRESETS[self.calculation_presets])
+        if self.custom_sett_from_file is not None:
+            calc_sett.update(self.custom_sett_from_file)
         if self.custom_sett_dict is not None:
             calc_sett.update(self.custom_sett_dict)
         return calc_sett
-
 
     def _get_default_input_filename(self):
         return '{}_in.py'.format(self.calculation_presets) \
@@ -57,7 +62,7 @@ class GPAWInputGenerator(DftInputGenerator):
     def calc_obj_as_str(self):
         top = "slab.calc = GPAW("
         
-        calc_sett = self.calculation_settings
+        calc_sett = self._calculation_settings
 
         params = []
         for p in GPAW_TAGS['parameters']:
@@ -87,19 +92,9 @@ a = glob.glob('input.traj')
 slab = read(a[-1])
 """
 
-        calc_sett = self.calculation_settings
-#
-#        gpaw_skel=f"""slab.calc=GPAW(
-#            xc='{calc_sett['xc']}',
-#            h={calc_sett['h']},
-#            occupations={str(calc_sett['occupations'])},
-#            poissonsolver={str(calc_sett['poissonsolver'])}
-#        )
-#        """
-
+        calc_sett = self._calculation_settings
         calc_type = calc_sett['calculation']
         if calc_type == 'relax':
-            # This definition will become unnecessary when defined in DFT FLOW
             define_relax_fn="""
 def relax(atoms, fmax=0.05, step=0.04):
     name = atoms.get_chemical_formula(mode='hill')
