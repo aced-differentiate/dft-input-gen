@@ -19,7 +19,7 @@ class GPAWInputGenerator(DftInputGenerator):
 
     def __init__(self, crystal_structure=None, calculation_presets=None,
                  custom_sett_file=None, custom_sett_dict=None,
-                 write_location=None, overwrite_files=None, **kwargs):
+                 write_location=None, gpaw_input_file=None, overwrite_files=None, **kwargs):
         """
         """
         super(GPAWInputGenerator, self).__init__(
@@ -33,10 +33,22 @@ class GPAWInputGenerator(DftInputGenerator):
 
         self._calculation_settings = self._get_calculation_settings()
 
+        self._gpaw_input_file= self._get_default_input_filename()
+        self.gpaw_input_file = gpaw_input_file
+
     @property
     def dft_package(self):
         return 'GPAW'
 
+    @property
+    def gpaw_input_file(self):
+        """Name of the gpaw input file to write to."""
+        return self._gpaw_input_file
+
+    @gpaw_input_file.setter
+    def gpaw_input_file(self, gpaw_input_file):
+        if gpaw_input_file is not None:
+            self._gpaw_input_file = gpaw_input_file
 
     @property
     def calculation_settings(self):
@@ -55,8 +67,9 @@ class GPAWInputGenerator(DftInputGenerator):
         return calc_sett
 
     def _get_default_input_filename(self):
-        return '{}_in.py'.format(self.calculation_presets) \
-            if self.calculation_presets is not None else 'gpaw_in.py'
+        if self.calculation_presets is None:
+            return "gpaw_in.py"
+        return '{}_in.py'.format(self.calculation_presets)
 
     @property
     def calc_obj_as_str(self):
@@ -147,6 +160,6 @@ def bulk_opt(atoms, step=0.05):
     def write_input_files(self):
         self.write_gpaw_input(
             write_location = self.write_location,
-            filename = self._get_default_input_filename(),
+            filename = self.gpaw_input_file,
         )
 
