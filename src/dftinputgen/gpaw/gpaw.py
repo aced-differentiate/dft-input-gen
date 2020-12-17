@@ -11,17 +11,25 @@ from dftinputgen.gpaw.settings.calculation_presets import GPAW_PRESETS
 from dftinputgen.base import DftInputGenerator
 from dftinputgen.base import DftInputGeneratorError
 
+
 class GPAWInputGeneratorError(DftInputGeneratorError):
     pass
 
+
 class GPAWInputGenerator(DftInputGenerator):
     """Base class to generate input python scripts for GPAW """
-
-    def __init__(self, crystal_structure=None, calculation_presets=None,
-                 custom_sett_file=None, custom_sett_dict=None,
-                 write_location=None, gpaw_input_file=None, overwrite_files=None, **kwargs):
-        """
-        """
+    def __init__(
+        self,
+        crystal_structure=None,
+        calculation_presets=None,
+        custom_sett_file=None,
+        custom_sett_dict=None,
+        write_location=None,
+        gpaw_input_file=None,
+        overwrite_files=None,
+        **kwargs,
+    ):
+        """"""
         super(GPAWInputGenerator, self).__init__(
             crystal_structure=crystal_structure,
             calculation_presets=calculation_presets,
@@ -29,7 +37,8 @@ class GPAWInputGenerator(DftInputGenerator):
             custom_sett_dict=custom_sett_dict,
             write_location=write_location,
             overwrite_files=overwrite_files,
-            **kwargs)
+            **kwargs,
+        )
 
         self._calculation_settings = self._get_calculation_settings()
 
@@ -74,19 +83,18 @@ class GPAWInputGenerator(DftInputGenerator):
     @property
     def calc_obj_as_str(self):
         top = "slab.calc = GPAW("
-        
+
         calc_sett = self._calculation_settings
 
         params = []
-        for p in GPAW_TAGS['parameters']:
+        for p in GPAW_TAGS["parameters"]:
             if p in calc_sett:
                 if type(calc_sett[p]) is str:
                     params.append(f"{p}='{str(calc_sett[p])}'")
                 else:
                     params.append(f"{p}={str(calc_sett[p])}")
 
-        return '\n'.join([top,',\n'.join(params),')'])
-
+        return "\n".join([top, ",\n".join(params), ")"])
 
     @property
     def gpaw_input_as_str(self):
@@ -106,9 +114,9 @@ slab = read(a[-1])
 """
 
         calc_sett = self._calculation_settings
-        calc_type = calc_sett['calculation']
-        if calc_type == 'relax':
-            define_relax_fn="""
+        calc_type = calc_sett["calculation"]
+        if calc_type == "relax":
+            define_relax_fn = """
 def relax(atoms, fmax=0.05, step=0.04):
     name = atoms.get_chemical_formula(mode='hill')
     atoms.calc.set(txt='output.txt')
@@ -116,10 +124,18 @@ def relax(atoms, fmax=0.05, step=0.04):
     dyn = BFGS(atoms=atoms, trajectory='output.traj', logfile='qn.log', maxstep=step)
     dyn.run(fmax=fmax)
 """
-            return '\n'.join([header,read_init_traj,define_relax_fn,self.calc_obj_as_str,'relax(slab)'])
+            return "\n".join(
+                [
+                    header,
+                    read_init_traj,
+                    define_relax_fn,
+                    self.calc_obj_as_str,
+                    "relax(slab)",
+                ]
+            )
 
-        elif calc_type == 'bulk_opt' or calc_type == 'bulk_opt_hcp':
-            define_bulk_opt_fn="""
+        elif calc_type == "bulk_opt" or calc_type == "bulk_opt_hcp":
+            define_bulk_opt_fn = """
 def bulk_opt(atoms, step=0.05):
    cell = atoms.get_cell()
    name = atoms.get_chemical_formula(mode='hill')
@@ -140,21 +156,37 @@ def bulk_opt(atoms, step=0.05):
    dyn.run(fmax=0.05)
    atoms.calc.write('output.gpw')
 """
-            return '\n'.join([header,read_init_traj,define_bulk_opt_fn,self.calc_obj_as_str,'bulk_opt(slab)'])
+            return "\n".join(
+                [
+                    header,
+                    read_init_traj,
+                    define_bulk_opt_fn,
+                    self.calc_obj_as_str,
+                    "bulk_opt(slab)",
+                ]
+            )
         # if not a relax or bulk_opt calculation, defaults to getting total energy of static structure
-        return '\n'.join([header,read_init_traj,define_relax_fn,calc_obj_as_str,'slab.get_total_energy()'])
+        return "\n".join(
+            [
+                header,
+                read_init_traj,
+                define_relax_fn,
+                calc_obj_as_str,
+                "slab.get_total_energy()",
+            ]
+        )
 
     def write_gpaw_input(self, write_location=None, filename=None):
         if not self.gpaw_input_as_str.strip():
-            msg = 'Nothing to write (probably no input settings found.)'
+            msg = "Nothing to write (probably no input settings found.)"
             raise GPAWInputGeneratorError(msg)
         if write_location is None:
-            msg = 'Location to write files not specified'
+            msg = "Location to write files not specified"
             raise GPAWInputGeneratorError(msg)
         if filename is None:
-            msg = 'Name of the input file to write into not specified'
+            msg = "Name of the input file to write into not specified"
             raise GPAWInputGeneratorError(msg)
-        with open(os.path.join(write_location, filename), 'w') as fw:
+        with open(os.path.join(write_location, filename), "w") as fw:
             fw.write(self.gpaw_input_as_str)
 
     def write_input_files(self):
@@ -162,4 +194,3 @@ def bulk_opt(atoms, step=0.05):
             write_location = self.write_location,
             filename = self.gpaw_input_file,
         )
-

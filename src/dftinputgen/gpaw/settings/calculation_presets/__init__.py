@@ -3,7 +3,7 @@ import json
 import pkg_resources
 
 
-__all__ = ['GPAW_PRESETS']
+__all__ = ["GPAW_PRESETS"]
 
 
 GPAW_PRESETS = {}
