@@ -2,3 +2,5 @@ include src/dftinputgen/*.txt
 include src/dftinputgen/data/*.json
 include src/dftinputgen/qe/settings/*.json
 include src/dftinputgen/qe/settings/calculation_presets/*.json
+include src/dftinputgen/gpaw/settings/*.json
+include src/dftinputgen/gpaw/settings/calculation_presets/*.json
