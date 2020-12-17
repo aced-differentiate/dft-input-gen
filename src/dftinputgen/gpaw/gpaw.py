@@ -18,6 +18,7 @@ class GPAWInputGeneratorError(DftInputGeneratorError):
 
 class GPAWInputGenerator(DftInputGenerator):
     """Base class to generate input python scripts for GPAW """
+
     def __init__(
         self,
         crystal_structure=None,
@@ -42,12 +43,12 @@ class GPAWInputGenerator(DftInputGenerator):
 
         self._calculation_settings = self._get_calculation_settings()
 
-        self._gpaw_input_file= self._get_default_input_filename()
+        self._gpaw_input_file = self._get_default_input_filename()
         self.gpaw_input_file = gpaw_input_file
 
     @property
     def dft_package(self):
-        return 'GPAW'
+        return "GPAW"
 
     @property
     def gpaw_input_file(self):
@@ -78,7 +79,7 @@ class GPAWInputGenerator(DftInputGenerator):
     def _get_default_input_filename(self):
         if self.calculation_presets is None:
             return "gpaw_in.py"
-        return '{}_in.py'.format(self.calculation_presets)
+        return "{}_in.py".format(self.calculation_presets)
 
     @property
     def calc_obj_as_str(self):
@@ -191,6 +192,6 @@ def bulk_opt(atoms, step=0.05):
 
     def write_input_files(self):
         self.write_gpaw_input(
-            write_location = self.write_location,
-            filename = self.gpaw_input_file,
+            write_location=self.write_location,
+            filename=self.gpaw_input_file,
         )
