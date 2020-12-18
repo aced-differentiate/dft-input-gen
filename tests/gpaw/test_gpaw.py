@@ -33,12 +33,27 @@ def test_gpaw_input_file():
 
 
 def test_bulk_opt_calculation_presets_settings():
+    # Tests bulk_opt settings (fcc/bcc)
     gig = GPAWInputGenerator(
         crystal_structure=cu_bulk_struct, calculation_presets="bulk_opt"
     )
     cs = gig.calculation_settings
     assert cs["calculation"] == "bulk_opt"
     assert cs["kpts"]["size"] == [12, 12, 12]
+    assert cs["xc"] == "BEEF-vdW"
+    assert cs["h"] == 0.16
+    assert cs["occupations"]["name"] == "fermi-dirac"
+    assert cs["occupations"]["width"] == 0.05
+
+
+def test_bulk_opt_hcp_calculation_presets_settings():
+    # Tests bulk_opt_hcp settings (hcp)
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="bulk_opt_hcp"
+    )
+    cs = gig.calculation_settings
+    assert cs["calculation"] == "bulk_opt_hcp"
+    assert cs["kpts"]["size"] == [12, 12, 6]
     assert cs["xc"] == "BEEF-vdW"
     assert cs["h"] == 0.16
     assert cs["occupations"]["name"] == "fermi-dirac"
