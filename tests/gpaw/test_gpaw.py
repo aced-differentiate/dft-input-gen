@@ -9,8 +9,10 @@ from dftinputgen.gpaw.gpaw import GPAWInputGenerator
 
 test_data_dir = os.path.join(os.path.dirname(__file__), "files")
 cu_bulk_struct = ase_io.read(os.path.join(test_data_dir, "cu_bulk.traj"))
-with open(os.path.join(test_data_dir, "TEST_cu_bulk_opt.py"), "r") as fr:
-    cu_bulk_opt_in = fr.read()
+with open(os.path.join(test_data_dir, "TEST_bulk_opt.py"), "r") as fr:
+    bulk_opt_in = fr.read()
+with open(os.path.join(test_data_dir, "TEST_relax.py"), "r") as fr:
+    relax_in = fr.read()
 
 
 def test_dft_package_name():
@@ -58,3 +60,51 @@ def test_bulk_opt_hcp_calculation_presets_settings():
     assert cs["h"] == 0.16
     assert cs["occupations"]["name"] == "fermi-dirac"
     assert cs["occupations"]["width"] == 0.05
+
+
+def test_molecule_calculation_presets_settings():
+    # Tests molecule settings
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="molecule"
+    )
+    cs = gig.calculation_settings
+    assert cs["xc"] == "BEEF-vdW"
+    assert cs["h"] == 0.16
+    assert cs["occupations"]["name"] == "fermi-dirac"
+    assert cs["occupations"]["width"] == 0.05
+    assert cs["calculation"] == "relax"
+
+
+def test_relax_calculation_presets_settings():
+    # Tests relax presets
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="relax"
+    )
+    cs = gig.calculation_settings
+    assert cs["xc"] == "BEEF-vdW"
+    assert cs["h"] == 0.16
+    assert cs["occupations"]["name"] == "fermi-dirac"
+    assert cs["occupations"]["width"] == 0.05
+    assert cs["calculation"] == "relax"
+    assert cs["poissonsolver"]["dipolelayer"] == "xy"
+
+
+def test_calc_obj_as_str():
+    # Tests generation of calculator object as string
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="bulk_opt"
+    )
+    calc_obj = "\n".join(bulk_opt_in.splitlines()[35:-1])
+    assert gig.calc_obj_as_str == calc_obj
+
+
+def test_gpaw_input_as_str():
+    # Test generation of full bulk opt script
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="bulk_opt"
+    )
+    assert gig.gpaw_input_as_str == "\n".join(bulk_opt_in.splitlines()[1:])
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="relax"
+    )
+    assert gig.gpaw_input_as_str == "\n".join(relax_in.splitlines()[1:])
