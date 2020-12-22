@@ -138,24 +138,24 @@ def relax(atoms, fmax=0.05, step=0.04):
         elif calc_type == "bulk_opt" or calc_type == "bulk_opt_hcp":
             define_bulk_opt_fn = """
 def bulk_opt(atoms, step=0.05):
-   cell = atoms.get_cell()
-   name = atoms.get_chemical_formula(mode='hill')
-   vol=atoms.get_volume()
-   volumes =[]
-   energies=[]
-   for x in np.linspace(1-2*step,1+2*step,5):
-       atoms.set_cell(cell*x, scale_atoms=True)
-       atoms.calc.set(txt=name+'_'+str(x)+'.txt')
-       energies.append(atoms.get_potential_energy())
-       volumes.append(atoms.get_volume())
-   eos = EquationOfState(volumes, energies)
-   v0,e0,B= eos.fit()
-   atoms.set_cell((v0/vol)**Fraction('1/3')*cell,scale_atoms=True)
-   x0=(v0/vol)**Fraction('1/3')
-   atoms.calc.set(txt='output.txt')
-   dyn=BFGS(atoms=atoms,trajectory='output.traj',logfile = 'qn.log')
-   dyn.run(fmax=0.05)
-   atoms.calc.write('output.gpw')
+    cell = atoms.get_cell()
+    name = atoms.get_chemical_formula(mode='hill')
+    vol=atoms.get_volume()
+    volumes =[]
+    energies=[]
+    for x in np.linspace(1-2*step,1+2*step,5):
+        atoms.set_cell(cell*x, scale_atoms=True)
+        atoms.calc.set(txt=name+'_'+str(x)+'.txt')
+        energies.append(atoms.get_potential_energy())
+        volumes.append(atoms.get_volume())
+    eos = EquationOfState(volumes, energies)
+    v0,e0,B= eos.fit()
+    atoms.set_cell((v0/vol)**Fraction('1/3')*cell,scale_atoms=True)
+    x0=(v0/vol)**Fraction('1/3')
+    atoms.calc.set(txt='output.txt')
+    dyn=BFGS(atoms=atoms,trajectory='output.traj',logfile = 'qn.log')
+    dyn.run(fmax=0.05)
+    atoms.calc.write('output.gpw')
 """
             return "\n".join(
                 [
@@ -192,6 +192,5 @@ def bulk_opt(atoms, step=0.05):
 
     def write_input_files(self):
         self.write_gpaw_input(
-            write_location=self.write_location,
-            filename=self.gpaw_input_file,
+            write_location=self.write_location, filename=self.gpaw_input_file,
         )
