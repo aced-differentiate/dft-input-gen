@@ -79,10 +79,10 @@ def test_molecule_calculation_presets_settings():
     assert cs["calculation"] == "relax"
 
 
-def test_relax_calculation_presets_settings():
+def test_surface_relax_calculation_presets_settings():
     # Tests relax presets
     gig = GPAWInputGenerator(
-        crystal_structure=cu_bulk_struct, calculation_presets="relax"
+        crystal_structure=cu_bulk_struct, calculation_presets="surface_relax"
     )
     cs = gig.calculation_settings
     assert cs["xc"] == "BEEF-vdW"
@@ -112,14 +112,14 @@ def test_gpaw_input_as_str():
     )
     assert gig.gpaw_input_as_str == "\n".join(bulk_opt_in.splitlines()[1:])
     gig = GPAWInputGenerator(
-        crystal_structure=cu_bulk_struct, calculation_presets="relax"
+        crystal_structure=cu_bulk_struct, calculation_presets="surface_relax"
     )
     assert gig.gpaw_input_as_str == "\n".join(relax_in.splitlines()[1:])
 
 
 def test_write_gpaw_input():
     gig = GPAWInputGenerator(crystal_structure=cu_bulk_struct)
-    gig.calculation_presets = "relax"
+    gig.calculation_presets = "surface_relax"
     # no `write_location` input: error
     with pytest.raises(GPAWInputGeneratorError, match="Location to write"):
         gig.write_gpaw_input()
@@ -149,7 +149,7 @@ def test_write_input_files():
     filename = _tmp_file.name
     write_location = os.path.dirname(filename)
     gig = GPAWInputGenerator(crystal_structure=cu_bulk_struct)
-    gig.calculation_presets = "relax"
+    gig.calculation_presets = "surface_relax"
     gig.custom_sett_dict = {
         "kpts": {"size": [6, 6, 1]},
         "xc": "PBE",
