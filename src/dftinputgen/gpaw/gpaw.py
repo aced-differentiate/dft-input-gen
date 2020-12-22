@@ -85,7 +85,7 @@ class GPAWInputGenerator(DftInputGenerator):
     def calc_obj_as_str(self):
         top = "slab.calc = GPAW("
 
-        calc_sett = self._calculation_settings
+        calc_sett = self.calculation_settings
 
         params = []
         for p in GPAW_TAGS["parameters"]:
@@ -114,12 +114,12 @@ a = glob.glob('input.traj')
 slab = read(a[-1])
 """
 
-        calc_sett = self._calculation_settings
+        calc_sett = self.calculation_settings
         try:
             calc_type = calc_sett["calculation"]
         except KeyError:
             # if no input settings found will return calc object without any settings defined
-            calc_type = "defaults"
+            calc_type = None
         if calc_type == "relax":
             define_relax_fn = """
 def relax(atoms, fmax=0.05, step=0.04):
@@ -181,9 +181,6 @@ def bulk_opt(atoms, step=0.05):
         )
 
     def write_gpaw_input(self, write_location=None, filename=None):
-        if not self.gpaw_input_as_str.strip():
-            msg = "Nothing to write (probably no input settings found.)"
-            raise GPAWInputGeneratorError(msg)
         if write_location is None:
             msg = "Location to write files not specified"
             raise GPAWInputGeneratorError(msg)
