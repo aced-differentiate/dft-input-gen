@@ -115,7 +115,11 @@ slab = read(a[-1])
 """
 
         calc_sett = self._calculation_settings
-        calc_type = calc_sett["calculation"]
+        try:
+            calc_type = calc_sett["calculation"]
+        except KeyError:
+            # if no input settings found will return calc object without any settings defined
+            calc_type = "defaults"
         if calc_type == "relax":
             define_relax_fn = """
 def relax(atoms, fmax=0.05, step=0.04):
@@ -171,8 +175,7 @@ def bulk_opt(atoms, step=0.05):
             [
                 header,
                 read_init_traj,
-                define_relax_fn,
-                calc_obj_as_str,
+                self.calc_obj_as_str,
                 "slab.get_total_energy()",
             ]
         )
