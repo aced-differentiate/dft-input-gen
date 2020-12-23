@@ -27,6 +27,7 @@ class GPAWInputGenerator(DftInputGenerator):
         custom_sett_dict=None,
         write_location=None,
         gpaw_input_file=None,
+        struct_filename=None,
         overwrite_files=None,
         **kwargs,
     ):
@@ -46,6 +47,9 @@ class GPAWInputGenerator(DftInputGenerator):
         self._gpaw_input_file = self._get_default_input_filename()
         self.gpaw_input_file = gpaw_input_file
 
+        self._struct_filename = "input.traj"
+        self.struct_filename = struct_filename
+
     @property
     def dft_package(self):
         return "GPAW"
@@ -59,6 +63,16 @@ class GPAWInputGenerator(DftInputGenerator):
     def gpaw_input_file(self, gpaw_input_file):
         if gpaw_input_file is not None:
             self._gpaw_input_file = gpaw_input_file
+
+    @property
+    def struct_filename(self):
+        """Name of the structure file that the gpaw script will read from."""
+        return self._struct_filename
+
+    @struct_filename.setter
+    def struct_filename(self, struct_filename):
+        if struct_filename is not None:
+            self._struct_filename = struct_filename
 
     @property
     def calculation_settings(self):
@@ -110,9 +124,11 @@ import glob
 """
 
         read_init_traj = """
-a = glob.glob('input.traj')
+a = glob.glob('{}')
 slab = read(a[-1])
-"""
+""".format(
+            self.struct_filename
+        )
 
         calc_sett = self.calculation_settings
         try:

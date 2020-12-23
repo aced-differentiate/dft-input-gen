@@ -132,6 +132,7 @@ def test_write_gpaw_input():
     _tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=True)
     filename = _tmp_file.name
     write_location = os.path.dirname(filename)
+    gig.struct_filename = "CH3.traj"
     gig.custom_sett_dict = {
         "kpts": {"size": [6, 6, 1]},
         "xc": "PBE",
@@ -150,6 +151,7 @@ def test_write_input_files():
     write_location = os.path.dirname(filename)
     gig = GPAWInputGenerator(crystal_structure=cu_bulk_struct)
     gig.calculation_presets = "surface_relax"
+    gig.struct_filename = "CH3.traj"
     gig.custom_sett_dict = {
         "kpts": {"size": [6, 6, 1]},
         "xc": "PBE",

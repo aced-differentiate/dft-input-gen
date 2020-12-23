@@ -9,7 +9,7 @@ import numpy as np
 import glob
 
 
-a = glob.glob('input.traj')
+a = glob.glob('CH3.traj')
 slab = read(a[-1])
 
 
