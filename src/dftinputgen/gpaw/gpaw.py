@@ -17,7 +17,62 @@ class GPAWInputGeneratorError(DftInputGeneratorError):
 
 
 class GPAWInputGenerator(DftInputGenerator):
-    """Base class to generate input python scripts for GPAW """
+    """
+    Constructor for the GPAW class.
+
+    Parameters
+    ----------
+
+    crystal_structure: :class:`ase.Atoms` object
+        :class:`ase.Atoms` object from `ase.io.read([crystal structure
+        file])`.
+
+    calculation_presets: str, optional
+        The "base" calculation settings to use--must be one of the
+        pre-defined groups of tags and values provided for pw.x.
+
+        Pre-defined settings for some common calculation types are in
+        INSTALL_PATH/qe/settings/calculation_presets/
+
+    custom_sett_file: str, optional
+        Location of a JSON file with custom calculation settings as a
+        dictionary of tags and values.
+
+        NB: Custom settings specified here always OVERRIDE those in
+        `calculation_presets` in case of overlap.
+
+    custom_sett_dict: dict, optional
+        Dictionary with custom calculation settings as tags and values/
+
+        NB: Custom settings specified here always OVERRIDE those in
+        `calculation_presets` and `custom_sett_file`.
+
+    write_location: str, optional
+        Path to the directory in which to write the input file(s).
+
+        Default: Current working directory.
+
+    gpaw_input_file: str, optional
+        Name of the file in which to write the GPAW python script
+
+        Default: "[`calculation_presets`]_in.py" if `calculation_presets` is
+        specified by the user, else "gpaw_in.py".
+
+    struct_filename: str, optional
+        Name of the structure file readable by `ase.io.read` that the written
+        gpaw script will call from.
+
+        Default: "input.traj"
+
+    overwrite_files: bool, optional
+        To overwrite files or not, that is the question.
+
+        Default: True
+
+    **kwargs:
+        Arbitrary keyword arguments.
+
+    """
 
     def __init__(
         self,
