@@ -11,6 +11,8 @@ test_data_dir = os.path.join(os.path.dirname(__file__), "files")
 cu_bulk_struct = ase_io.read(os.path.join(test_data_dir, "cu_bulk.traj"))
 with open(os.path.join(test_data_dir, "TEST_bulk_opt.py"), "r") as fr:
     bulk_opt_in = fr.read()
+with open(os.path.join(test_data_dir, "TEST_bulk_opt_hcp.py"), "r") as fr:
+    bulk_opt_hcp_in = fr.read()
 with open(os.path.join(test_data_dir, "TEST_relax.py"), "r") as fr:
     relax_in = fr.read()
 with open(os.path.join(test_data_dir, "TEST_relax_custom.py"), "r") as fr:
@@ -111,6 +113,10 @@ def test_gpaw_input_as_str():
         crystal_structure=cu_bulk_struct, calculation_presets="bulk_opt"
     )
     assert gig.gpaw_input_as_str == "\n".join(bulk_opt_in.splitlines()[1:])
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct, calculation_presets="bulk_opt_hcp"
+    )
+    assert gig.gpaw_input_as_str == "\n".join(bulk_opt_hcp_in.splitlines()[1:])
     gig = GPAWInputGenerator(
         crystal_structure=cu_bulk_struct, calculation_presets="surface_relax"
     )
