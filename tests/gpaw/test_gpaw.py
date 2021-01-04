@@ -102,7 +102,7 @@ def test_calculator_object_as_str():
     gig = GPAWInputGenerator(crystal_structure=cu_bulk_struct)
     assert gig.calculator_object_as_str == "slab.calc = GPAW(\n\n)"
     gig.calculation_presets = "bulk_opt"
-    calc_obj = "\n".join(bulk_opt_in.splitlines()[35:-1])
+    calc_obj = "\n".join(bulk_opt_in.splitlines()[34:-1])
     assert gig.calculator_object_as_str == calc_obj
 
 
