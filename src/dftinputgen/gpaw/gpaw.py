@@ -58,6 +58,17 @@ class GPAWInputGenerator(DftInputGenerator):
         Default: "[`calculation_presets`]_in.py" if `calculation_presets` is
         specified by the user, else "gpaw_in.py".
 
+    gpaw_restart_file: str, optional
+        Name of the gpaw restart file that the written gpaw script will read
+        from.
+
+        Default: "output.gpw"
+
+    restart: bool, optional
+        Bool specifying if the gpaw script written should be a restart job
+
+        Default: False
+
     struct_filename: str, optional
         Name of the structure file readable by `ase.io.read` that the written
         gpaw script will call from.
@@ -82,6 +93,8 @@ class GPAWInputGenerator(DftInputGenerator):
         custom_sett_dict=None,
         write_location=None,
         gpaw_input_file=None,
+        gpaw_restart_file=None,
+        restart=None,
         struct_filename=None,
         overwrite_files=None,
         **kwargs,
@@ -102,8 +115,14 @@ class GPAWInputGenerator(DftInputGenerator):
         self._gpaw_input_file = self._get_default_input_filename()
         self.gpaw_input_file = gpaw_input_file
 
+        self._gpaw_restart_file = "output.gpw"
+        self.gpaw_restart_file = gpaw_restart_file
+
         self._struct_filename = "input.traj"
         self.struct_filename = struct_filename
+
+        self._restart = False
+        self.restart = restart
 
     @property
     def dft_package(self):
@@ -120,6 +139,16 @@ class GPAWInputGenerator(DftInputGenerator):
             self._gpaw_input_file = gpaw_input_file
 
     @property
+    def gpaw_restart_file(self):
+        """Name of gpaw output file to read from if restarting a calculation"""
+        return self._gpaw_restart_file
+
+    @gpaw_restart_file.setter
+    def gpaw_restart_file(self, gpaw_restart_file):
+        if gpaw_restart_file is not None:
+            self._gpaw_restart_file = gpaw_restart_file
+
+    @property
     def struct_filename(self):
         """Name of the structure file that the gpaw script will read from."""
         return self._struct_filename
@@ -128,6 +157,16 @@ class GPAWInputGenerator(DftInputGenerator):
     def struct_filename(self, struct_filename):
         if struct_filename is not None:
             self._struct_filename = struct_filename
+
+    @property
+    def restart(self):
+        """Whether script should be a restart script"""
+        return self._restart
+
+    @restart.setter
+    def restart(self, restart):
+        if restart is not None:
+            self._restart = restart
 
     @property
     def calculation_settings(self):
@@ -178,12 +217,22 @@ import numpy as np
 import glob
 """
 
-        read_init_traj = """
+        if self.restart:
+            read_init_traj = """from gpaw import restart
+
+a = glob.glob('{}')
+slab,calc = restart(a[-1])
+""".format(
+                self.gpaw_restart_file
+            )
+
+        else:
+            read_init_traj = """
 a = glob.glob('{}')
 slab = read(a[-1])
 """.format(
-            self.struct_filename
-        )
+                self.struct_filename
+            )
 
         calc_sett = self.calculation_settings
         try:

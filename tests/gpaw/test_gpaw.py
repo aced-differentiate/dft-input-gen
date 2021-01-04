@@ -15,6 +15,8 @@ with open(os.path.join(test_data_dir, "TEST_bulk_opt_hcp.py"), "r") as fr:
     bulk_opt_hcp_in = fr.read()
 with open(os.path.join(test_data_dir, "TEST_relax.py"), "r") as fr:
     relax_in = fr.read()
+with open(os.path.join(test_data_dir, "TEST_restart.py"), "r") as fr:
+    restart_in = fr.read()
 with open(os.path.join(test_data_dir, "TEST_relax_custom.py"), "r") as fr:
     relax_custom_in = fr.read()
 with open(os.path.join(test_data_dir, "TEST_defaults.py"), "r") as fr:
@@ -121,6 +123,13 @@ def test_gpaw_input_as_str():
         crystal_structure=cu_bulk_struct, calculation_presets="surface_relax"
     )
     assert gig.gpaw_input_as_str == "\n".join(relax_in.splitlines()[1:])
+    gig = GPAWInputGenerator(
+        crystal_structure=cu_bulk_struct,
+        calculation_presets="surface_relax",
+        restart=True,
+        gpaw_restart_file="C3N4.gpw",
+    )
+    assert gig.gpaw_input_as_str == "\n".join(restart_in.splitlines()[1:])
 
 
 def test_write_gpaw_input():
