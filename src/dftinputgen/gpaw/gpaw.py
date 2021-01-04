@@ -151,7 +151,7 @@ class GPAWInputGenerator(DftInputGenerator):
         return "{}_in.py".format(self.calculation_presets)
 
     @property
-    def calc_obj_as_str(self):
+    def calculator_object_as_str(self):
         top = "slab.calc = GPAW("
 
         calc_sett = self.calculation_settings
@@ -205,7 +205,7 @@ def relax(atoms, fmax=0.05, step=0.04):
                     header,
                     read_init_traj,
                     define_relax_fn,
-                    self.calc_obj_as_str,
+                    self.calculator_object_as_str,
                     "relax(slab)",
                 ]
             )
@@ -237,7 +237,7 @@ def bulk_opt(atoms, step=0.05):
                     header,
                     read_init_traj,
                     define_bulk_opt_fn,
-                    self.calc_obj_as_str,
+                    self.calculator_object_as_str,
                     "bulk_opt(slab)",
                 ]
             )
@@ -299,7 +299,7 @@ def optimize_bulk_hcp(atoms, step=0.05, nstep=5):
                     header,
                     read_init_traj,
                     define_bulk_opt_hcp_fn,
-                    self.calc_obj_as_str,
+                    self.calculator_object_as_str,
                     "bulk_opt_hcp(slab)",
                 ]
             )
@@ -309,7 +309,7 @@ def optimize_bulk_hcp(atoms, step=0.05, nstep=5):
             [
                 header,
                 read_init_traj,
-                self.calc_obj_as_str,
+                self.calculator_object_as_str,
                 "slab.get_total_energy()",
             ]
         )

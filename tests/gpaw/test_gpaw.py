@@ -95,13 +95,13 @@ def test_surface_relax_calculation_presets_settings():
     assert cs["poissonsolver"]["dipolelayer"] == "xy"
 
 
-def test_calc_obj_as_str():
+def test_calculator_object_as_str():
     # Tests generation of calculator object as string
     gig = GPAWInputGenerator(crystal_structure=cu_bulk_struct)
-    assert gig.calc_obj_as_str == "slab.calc = GPAW(\n\n)"
+    assert gig.calculator_object_as_str == "slab.calc = GPAW(\n\n)"
     gig.calculation_presets = "bulk_opt"
     calc_obj = "\n".join(bulk_opt_in.splitlines()[35:-1])
-    assert gig.calc_obj_as_str == calc_obj
+    assert gig.calculator_object_as_str == calc_obj
 
 
 def test_gpaw_input_as_str():
