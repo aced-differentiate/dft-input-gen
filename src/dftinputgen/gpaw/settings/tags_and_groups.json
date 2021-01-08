@@ -1,0 +1,28 @@
+{
+    "parameters" : [
+        "basis",
+        "charge",
+        "communicator",
+        "convergence",
+        "eigensolver",
+        "external",
+        "fixdensity",
+        "gpts",
+        "h",
+        "hund",
+        "idiotproof",
+        "kpts",
+        "maxiter",
+        "mode",
+        "nbands",
+        "occupations",
+        "parallel",
+        "poissonsolver",
+        "random",
+        "setups",
+        "spinpol",
+        "symmetry",
+        "txt",
+        "xc"
+    ]
+}

@@ -9,5 +9,6 @@ Module reference
 
     base
     qe/index
+    gpaw/index
     utils
     data

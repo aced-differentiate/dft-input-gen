@@ -1,0 +1,12 @@
+{
+    "kpts": {
+        "size": [12,12,6]
+    },
+    "xc": "BEEF-vdW",
+    "h": 0.16,
+    "occupations": {
+        "name": "fermi-dirac",
+        "width": 0.05
+    },
+    "calculation": "bulk_opt_hcp"
+}

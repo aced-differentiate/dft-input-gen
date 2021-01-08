@@ -20,9 +20,19 @@ Code Organization
         settings/
             tags_and_groups.json
             ...
-            base_recipes/
+            calculation_presets/
                 scf.json
                 vc-relax.json
+                ...
+    gpaw/
+        gpaw.py
+        ...
+        settings/
+            tags_and_groups.json
+            ...
+            calculation_presets/
+                bulk_opt.json
+                bulk_opt_hcp.json
                 ...
     vasp/
         ...
@@ -33,6 +43,8 @@ Code Organization
 - ``dftinputgen.qe``: derived classes that can generate input files for various
   DFT-based and postprocessing codes in the Quantum Espresso suite (more
   :ref:`here <ssec-qe>`)
+- ``dftinputgen.gpaw``: derived classes that can generate input python scripts
+  for the GPAW package (more :ref:`here <ssec-gpaw>`).
 - ``dftinputgen.vasp``: [under development] derived classes that can generate
   input files for the VASP package.
 - ``dftinputgen.utils``: general-purpose helper functions, e.g. chemical formula
