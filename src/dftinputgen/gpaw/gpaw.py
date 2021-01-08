@@ -30,70 +30,70 @@ class GPAWInputGenerator(DftInputGenerator):
     ):
         """
         Constructor.
-    
+
         Parameters
         ----------
-    
+
         crystal_structure: :class:`ase.Atoms` object
             :class:`ase.Atoms` object from `ase.io.read([crystal structure
             file])`.
-    
+
         calculation_presets: str, optional
             The "base" calculation settings to use--must be one of the
             pre-defined groups of tags and values provided for pw.x.
-    
+
             Pre-defined settings for some common calculation types are in
             INSTALL_PATH/qe/settings/calculation_presets/
-    
+
         custom_sett_file: str, optional
             Location of a JSON file with custom calculation settings as a
             dictionary of tags and values.
-    
+
             NB: Custom settings specified here always OVERRIDE those in
             `calculation_presets` in case of overlap.
-    
+
         custom_sett_dict: dict, optional
             Dictionary with custom calculation settings as tags and values/
-    
+
             NB: Custom settings specified here always OVERRIDE those in
             `calculation_presets` and `custom_sett_file`.
-    
+
         write_location: str, optional
             Path to the directory in which to write the input file(s).
-    
+
             Default: Current working directory.
-    
+
         gpaw_input_file: str, optional
             Name of the file in which to write the GPAW python script
-    
-            Default: "[`calculation_presets`]_in.py" if `calculation_presets` is
-            specified by the user, else "gpaw_in.py".
-    
+
+            Default: "[`calculation_presets`]_in.py" if `calculation_presets`
+            is specified by the user, else "gpaw_in.py".
+
         gpaw_restart_file: str, optional
-            Name of the gpaw restart file that the written gpaw script will read
-            from.
-    
+            Name of the gpaw restart file that the written gpaw script will
+            read from.
+
             Default: "output.gpw"
-    
+
         restart: bool, optional
             Bool specifying if the gpaw script written should be a restart job
-    
+
             Default: False
-    
+
         struct_filename: str, optional
-            Name of the structure file readable by `ase.io.read` that the written
-            gpaw script will call from.
-    
+            Name of the structure file readable by `ase.io.read` that the
+            written gpaw script will call from.
+
             Default: "input.traj"
-    
+
         overwrite_files: bool, optional
             To overwrite files or not, that is the question.
-    
+
             Default: True
-    
+
         **kwargs:
             Arbitrary keyword arguments.
-    
+
         """
 
         super(GPAWInputGenerator, self).__init__(
@@ -233,15 +233,16 @@ slab = read(a[-1])
         try:
             calc_type = calc_sett["calculation"]
         except KeyError:
-            # if no input settings found will return calc object without any settings defined
+            # if no input settings found will return calc object
+            # without any settings defined
             calc_type = None
         if calc_type == "relax":
             define_relax_fn = """
 def relax(atoms, fmax=0.05, step=0.04):
-    name = atoms.get_chemical_formula(mode='hill')
     atoms.calc.set(txt='output.txt')
     atoms.calc.attach(atoms.calc.write, 5, 'output.gpw')
-    dyn = BFGS(atoms=atoms, trajectory='output.traj', logfile='qn.log', maxstep=step)
+    dyn = BFGS(atoms=atoms, trajectory='output.traj',
+               logfile='qn.log', maxstep=step)
     dyn.run(fmax=fmax)
 """
             return "\n".join(
@@ -348,7 +349,8 @@ def optimize_bulk_hcp(atoms, step=0.05, nstep=5):
                 ]
             )
 
-        # if not a relax or bulk_opt calculation, defaults to getting total energy of static structure
+        # if not a relax or bulk_opt calculation,
+        # defaults to getting total energy of static structure
         return "\n".join(
             [
                 header,

@@ -1,1 +1,1 @@
-from dftinputgen.gpaw.gpaw import GPAWInputGenerator
+from dftinputgen.gpaw.gpaw import GPAWInputGenerator  # noqa: F401

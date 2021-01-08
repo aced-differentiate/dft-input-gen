@@ -14,10 +14,10 @@ slab,calc = restart(a[-1])
 
 
 def relax(atoms, fmax=0.05, step=0.04):
-    name = atoms.get_chemical_formula(mode='hill')
     atoms.calc.set(txt='output.txt')
     atoms.calc.attach(atoms.calc.write, 5, 'output.gpw')
-    dyn = BFGS(atoms=atoms, trajectory='output.traj', logfile='qn.log', maxstep=step)
+    dyn = BFGS(atoms=atoms, trajectory='output.traj',
+               logfile='qn.log', maxstep=step)
     dyn.run(fmax=fmax)
 
 slab.calc = GPAW(
